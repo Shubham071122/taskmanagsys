@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.task-card:active{
+    opacity: 0.7;
+    border: 1px solid black;
+}
