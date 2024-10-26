@@ -130,6 +130,7 @@ const TaskBoard = () => {
           task={selectedTask}
           onClose={closeModal}
           boardId={boardId}
+          isModalOpen={showModal}
         />
       )}
     </div>

@@ -38,6 +38,7 @@ const TaskCard = ({ task, openModal,setActiveCard }) => {
           onChange={(e) => handleStatusChange(e.target.value)}
           value={task.status}
           className="border p-1 rounded"
+          onClick={(e) => e.stopPropagation()}
         >
           <option value="Todo">To Do</option>
           <option value="Inprogress">In Progress</option>

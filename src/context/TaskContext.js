@@ -27,7 +27,7 @@ export const TaskProvider = ({ children }) => {
     } catch (err) {
       setError(err.message);
       console.log(err);
-      toast.error('Failed to fetch tasks');
+      // toast.error('Failed to fetch tasks');
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ export const TaskProvider = ({ children }) => {
       );
 
       if (response.status === 201) {
-        setTasks((prevTasks) => [response.data.data, ...prevTasks])
+        setTasks((prevTasks) => [response.data.data, ...prevTasks]);
         fetchTasks(boardId);
         toast.success('Task added successfully');
       } else {
@@ -64,6 +64,7 @@ export const TaskProvider = ({ children }) => {
   };
 
   const updateTask = async (cardId, updatedTask) => {
+    // console.log("updt:",updatedTask)
     try {
       const response = await axios.put(
         `${process.env.REACT_APP_SERVER_URL}/taskcard/u/${cardId}`,
@@ -82,8 +83,12 @@ export const TaskProvider = ({ children }) => {
         toast.error('Failed to update task');
       }
     } catch (error) {
-      console.log("Error while updating task:",error);
-      toast.error('Error updating task');
+      console.log('Error while updating task:', error);
+      if (error?.response?.data.data === 'Assignee not found') {
+        toast.error('Assigned User not found!');
+      } else {
+        toast.error('Error updating task');
+      }
     }
   };
 
@@ -93,19 +98,17 @@ export const TaskProvider = ({ children }) => {
         `${process.env.REACT_APP_SERVER_URL}/taskcard/d/${cardId}`,
         { withCredentials: true },
       );
-      if(response.status === 200){
+      if (response.status === 200) {
         setTasks(tasks.filter((task) => task._id !== cardId));
         toast.success('Task deleted successfully');
-      }else{
+      } else {
         toast.error('Failed to delete task');
       }
     } catch (error) {
-      console.log("Error while deleting task:",error);
+      console.log('Error while deleting task:', error);
       toast.error('Error deleting task');
     }
   };
-
-
 
   return (
     <TaskContext.Provider

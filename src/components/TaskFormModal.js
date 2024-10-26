@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { TaskContext } from '../context/TaskContext';
 import { useParams } from 'react-router-dom';
 
-const TaskFormModal = ({ task, onClose }) => {
+const TaskFormModal = ({ task, onClose, isModalOpen }) => {
   const { addTask, updateTask } = useContext(TaskContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -10,27 +10,41 @@ const TaskFormModal = ({ task, onClose }) => {
   const [priority, setPriority] = useState('Low');
   const [status, setStatus] = useState('Todo');
   const [assignee, setAssignee] = useState('');
-  const {boardId} = useParams();
+  const { boardId } = useParams();
+
+  const formatDueDateForInput = (dueDate) => {
+    const parts = dueDate.split('/'); // Assuming the input format is DD/MM/YYYY
+    return `${parts[2]}-${parts[1]}-${parts[0]}`; // Convert to YYYY-MM-DD
+  };
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description);
-      setDueDate(task.dueDate);
+      setDueDate(formatDueDateForInput(task.dueDate));
       setPriority(task.priority);
       setStatus(task.status);
-      setAssignee(task.assignee)
+      setAssignee(task.assignee);
     }
   }, [task]);
+  console.log('ttt:', task);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (task) {
-      updateTask(task._id, { title, description, dueDate, priority,assignee, status });
+      updateTask(task._id, {
+        title,
+        description,
+        dueDate,
+        priority,
+        assignee,
+        status,
+      });
+      onClose();
     } else {
-      addTask( title, description, status, boardId, dueDate, priority, assignee );
+      addTask(title, description, status, boardId, dueDate, priority, assignee);
+      onClose();
     }
-    onClose();
   };
 
   return (
@@ -63,7 +77,7 @@ const TaskFormModal = ({ task, onClose }) => {
         <input
           type="text"
           value={assignee}
-          placeholder='Assignee'
+          placeholder="Assignee"
           onChange={(e) => setAssignee(e.target.value)}
           className="border p-2 mb-4 w-full"
         />
